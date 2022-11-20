@@ -187,6 +187,129 @@ void ShellSort(vector<T>& arr){
     ShellSortHelper<T>(arr,arr.size());
 }
 
+// Quick sort partition
+template<typename T>
+int partition(vector<T>& arr, int start, int end){
+    int pivot = start, i = start, j = end+1;
+    while(true){
+        do i++;
+        while( arr[i] <= arr[pivot] && i <= end );
+        do j--;
+        while( arr[j] >= arr[pivot] && j > start );
+        if(i < j){
+            swap(arr[i],arr[j]);
+        }
+        else{
+            break;
+        }
+    }
+    swap(arr[pivot],arr[j]);
+    return j;
+}
+
+// Quick sort O(nlogn)
+template<typename T>
+void QuickSortHelper(vector<T>& arr, int start, int end){
+    if(start < end){
+        int index = partition(arr, start, end);
+        QuickSortHelper(arr, start, index-1);
+        QuickSortHelper(arr, index+1, end);
+    }
+}
+
+// wrapper function for QuickSort Algorithm
+template<typename T>
+void QuickSort(vector<T>& arr){
+    QuickSortHelper<T>(arr,0,arr.size()-1);
+}
+
+
+// Helper function for RadixSort
+void RadixSortHelper(vector<string>& arr){
+    vector<queue<string>> buckets(10,queue<string>());
+    vector<string> temp;
+    int size = arr.size();
+    int maxLen = 0;
+    for(int i=0;i<size;++i){
+        temp.push_back(arr[i]);
+        maxLen = max(int(arr[i].size()),maxLen);
+    }
+    for(int i=0;i<maxLen;++i){
+        for(int j=0;j<size;++j){
+            int curr = temp[j].size()-i-1;
+            if(curr<0){
+                buckets[0].push(temp[j]);
+                continue;
+            }
+            switch(temp[j][curr]){
+                case '0':
+                    buckets[0].push(temp[j]);
+                    break;
+                case '1':
+                    buckets[1].push(temp[j]);
+                    break;
+                case '2':
+                    buckets[2].push(temp[j]);
+                    break;
+                case '3':
+                    buckets[3].push(temp[j]);
+                    break;
+                case '4':
+                    buckets[4].push(temp[j]);
+                    break;
+                case '5':
+                    buckets[5].push(temp[j]);
+                    break;
+                case '6':
+                    buckets[6].push(temp[j]);
+                    break;
+                case '7':
+                    buckets[7].push(temp[j]);
+                    break;
+                case '8':
+                    buckets[8].push(temp[j]);
+                    break;
+                case '9':
+                    buckets[9].push(temp[j]);
+            }
+        }
+        temp.clear();
+        for(int j=0;j<10;++j){
+            auto& q = buckets[j];
+            while(!q.empty()){
+                temp.push_back(q.front());
+                q.pop();
+            }
+        }
+    }
+    arr = temp;
+}
+// Radix Sort
+void RadixSort(vector<string>& arr){
+    vector<string> negatives;
+    vector<string> positives;
+    // seperate elements into 2 arrays by its sign
+    for(auto& str : arr){
+        if(str[0]=='-'){
+            negatives.push_back(Digitalize(str));
+        }else{
+            positives.push_back(Digitalize(str));
+        }
+    }
+
+    RadixSortHelper(negatives);
+    RadixSortHelper(positives);
+    // put them back to original array
+    int count = 0;
+    for(int i=negatives.size()-1;i>=0;--i){
+        arr[count++] = negatives[i];
+    }
+    int size = positives.size();
+    for(int i=0;i<size;++i){
+        arr[count++] = positives[i];
+    }
+}
+
 // helper function to randomly generate int array
 vector<int> RandomArray(){
     srand(time(NULL));
@@ -198,9 +321,21 @@ vector<int> RandomArray(){
     return arr;
 }
 
+// helper function to randomly generate string array
+vector<string> RandomStringArray(){
+    srand(time(NULL));
+    int size = rand()%5000+1;
+    vector<string> arr(size,0);
+    for(int i=0;i<size;++i){
+        arr[i] = to_string(rand()%5000);
+    }
+    return arr;
+}
+
 // helper function to compare 2 arrays
 // return true if they are the same
-bool Check(vector<int>& arr1,vector<int>& arr2){
+template<typename T>
+bool Check(vector<T>& arr1,vector<T>& arr2){
     int size1 = arr1.size();
     int size2 = arr2.size();
     if(size1!=size2){
@@ -225,13 +360,17 @@ bool TestBubbleSortHelper(vector<int>& arr){
 
 // randomly generate 1000 arrays to test the correctness of BubbleSort algorithm
 void TestBubbleSort(){
-    for(int i=0;i<1000;++i){
+    int i;
+    for(i=0;i<1000;++i){
         vector<int> temp = RandomArray();
         if(!TestBubbleSortHelper(temp)){
-            cout << "BubbleSort正确性检测不通过" << endl;
+            break;
         }
     }
-    cout << "BubbleSort正确性检测通过" << endl;
+    if(i == 1000)
+        cout << "BubbleSort正确性检测通过" << endl;
+    else
+        cout << "BubbleSort正确性检测不通过" << endl;
 }
 
 // helper function to test the correctness of SelectionSort algorithm
@@ -245,13 +384,17 @@ bool TestSelectionSortHelper(vector<int>& arr){
 
 // randomly generate 1000 arrays to test the correctness of SelectionSort algorithm
 void TestSelectionSort(){
-    for(int i=0;i<1000;++i){
+    int i;
+    for(i=0;i<1000;++i){
         vector<int> temp = RandomArray();
         if(!TestSelectionSortHelper(temp)){
-            cout << "SelectionSort正确性检测不通过" << endl;
+            break;
         }
     }
-    cout << "SelectionSort正确性检测通过" << endl;
+    if(i == 1000)
+        cout << "SelectionSort正确性检测通过" << endl;
+    else
+        cout << "SelectionSort正确性检测不通过" << endl;
 }
 
 // helper function to test the correctness of MergeSort algorithm
@@ -265,13 +408,17 @@ bool testMergeSortHelper(vector<int>& arr){
 
 // randomly generate 1000 arrays to test the correctness of MergeSort algorithm
 void TestMergeSort(){
-    for(int i=0;i<1000;++i){
+    int i;
+    for(i=0;i<1000;++i){
         vector<int> temp = RandomArray();
         if(!testMergeSortHelper(temp)){
-            cout << "MergeSort正确性检测不通过" << endl;
+            break;
         }
     }
-    cout << "MergeSort正确性检测通过" << endl;
+    if(i == 1000)
+        cout << "MergeSort正确性检测通过" << endl;
+    else
+        cout << "MergeSort正确性检测不通过" << endl;
 }
 
 // helper function to test the correctness of ShellSort algorithm
@@ -285,13 +432,74 @@ bool testShellSortHelper(vector<int>& arr){
 
 // randomly generate 1000 arrays to test the correctness of ShellSort algorithm
 void TestShellSort(){
-    for(int i=0;i<1000;++i){
+    int i;
+    for(i=0;i<1000;++i){
         vector<int> temp = RandomArray();
         if(!testShellSortHelper(temp)){
-            cout << "ShellSort正确性检测不通过" << endl;
+            break;
         }
     }
-    cout << "ShellSort正确性检测通过" << endl;
+    if(i == 1000)
+        cout << "ShellSort正确性检测通过" << endl;
+    else
+        cout << "ShellSort正确性检测不通过" << endl;
+}
+
+// helper function to test the correctness of QuickSort algorithm
+// return false for incorrect result
+bool testQuickSortHelper(vector<int>& arr){
+    vector<int> temp = arr;
+    QuickSort(arr);
+    sort(temp.begin(),temp.end());
+    return Check(arr,temp);
+}
+
+// randomly generate 1000 arrays to test the correctness of QuickSort algorithm
+void TestQuickSort(){
+    int i;
+    for(i=0;i<1000;++i){
+        vector<int> temp = RandomArray();
+        if(!testQuickSortHelper(temp)){
+           break;
+        }
+    }
+    if(i == 1000)
+        cout << "QuickSort正确性检测通过" << endl;
+    else
+        cout << "QuickSort正确性检测不通过" << endl;
+}
+
+// helper function to test the correctness of RadixSort algorithm
+// return false for incorrect result
+// 待修改
+bool TestRadixSortHelper(vector<int>& arr){
+    int size = arr.size();
+    vector<string> temp(size,"");
+    for(int i=0;i<size;++i){
+        temp[i] = to_string(arr[i]);
+    }
+    RadixSort(temp);
+    sort(arr.begin(),arr.end());
+    vector<string> correct(size,"");
+    for(int i=0;i<size;++i){
+        correct[i] = to_string(arr[i]);
+    }
+    return Check<string>(correct,temp);
+}
+
+// randomly generate 1000 arrays to test the correctness of BubbleSort algorithm
+void TestRadixSort(){
+    int i;
+    for(i=0;i<1000;++i){
+        vector<int> temp = RandomArray();
+        if(!TestRadixSortHelper(temp)){
+            break;
+        }
+    }
+    if(i == 1000)
+        cout << "RadixSort正确性检测通过" << endl;
+    else
+        cout << "RadixSort正确性检测不通过" << endl;
 }
 
 // randomly generate 1000 arrays and use both algorithms to sort them

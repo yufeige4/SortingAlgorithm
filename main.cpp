@@ -14,10 +14,12 @@ int main(){
     
     // 随机生成1000个数组，数组大小为随机1至5000，数组元素为随机0至4999的int数据
     // 先分别测试其的正确性
-    TestBubbleSort();
-    TestSelectionSort();
-    TestMergeSort();
-    TestShellSort();
+    // TestBubbleSort();
+    // TestSelectionSort();
+    // TestMergeSort();
+    // TestShellSort();
+    // TestQuickSort();
+    TestRadixSort();
     
     // 再随机生成10000个数组，数组大小为随机1至5000，数组元素为随机0至4999的int数据
     // 拷贝一份相同的数据集
