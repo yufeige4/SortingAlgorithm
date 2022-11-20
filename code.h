@@ -160,6 +160,33 @@ void MergeSort(vector<T>& arr){
     MergeSortHelper<T>(arr,0,arr.size()-1);
 }
 
+// Shell sort O(nlogn)
+template<typename T>
+void ShellSortHelper(vector<T>& arr,int size){
+    int i,j,flag,gap = size;
+    T temp;
+    while(gap > 1){
+        gap = gap/2;
+        do{
+            flag = 0;
+            for (i = 0; i < size-gap; ++i){
+                j = i + gap;
+                if(cmp<T>(arr[i],arr[j])){
+                    swap(arr[i],arr[j]);
+                    flag = 1;
+                }
+            }
+            
+        }while( flag != 0 );
+    }
+}
+
+// wrapper function for ShellSort Algorithm
+template<typename T>
+void ShellSort(vector<T>& arr){
+    ShellSortHelper<T>(arr,arr.size());
+}
+
 // helper function to randomly generate int array
 vector<int> RandomArray(){
     srand(time(NULL));
@@ -245,6 +272,26 @@ void TestMergeSort(){
         }
     }
     cout << "MergeSort正确性检测通过" << endl;
+}
+
+// helper function to test the correctness of ShellSort algorithm
+// return false for incorrect result
+bool testShellSortHelper(vector<int>& arr){
+    vector<int> temp = arr;
+    ShellSort(arr);
+    sort(temp.begin(),temp.end());
+    return Check(arr,temp);
+}
+
+// randomly generate 1000 arrays to test the correctness of ShellSort algorithm
+void TestShellSort(){
+    for(int i=0;i<1000;++i){
+        vector<int> temp = RandomArray();
+        if(!testShellSortHelper(temp)){
+            cout << "ShellSort正确性检测不通过" << endl;
+        }
+    }
+    cout << "ShellSort正确性检测通过" << endl;
 }
 
 // randomly generate 1000 arrays and use both algorithms to sort them
