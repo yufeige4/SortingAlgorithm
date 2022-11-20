@@ -193,9 +193,11 @@ int partition(vector<T>& arr, int start, int end){
     int pivot = start, i = start, j = end+1;
     while(true){
         do i++;
-        while( arr[i] <= arr[pivot] && i <= end );
+        while( cmp(arr[pivot],arr[i]) && i <= end );
+        // while( arr[i] <= arr[pivot] && i <= end );
         do j--;
-        while( arr[j] >= arr[pivot] && j > start );
+        while( cmp(arr[j],arr[pivot]) && j > start );
+        // while( arr[j] >= arr[pivot] && j > start );
         if(i < j){
             swap(arr[i],arr[j]);
         }
