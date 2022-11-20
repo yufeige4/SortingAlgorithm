@@ -93,6 +93,28 @@ void BubbleSort(vector<T>& arr){
     BubbleSortHelper<T>(arr,arr.size());
 }
 
+// selection sort O(n^2)
+template<typename T>
+void SelectionSortHelper(vector<T>& arr,int size){
+    for(int i=0;i<size;++i){
+        T smallest = arr[i];
+        int index = i;
+        for(int j=i+1;j<size;++j){
+            if(cmp<T>(smallest,arr[j])){
+                smallest = arr[j];
+                index = j;
+            }
+        }
+        swap(arr[i],arr[index]);
+    }
+} 
+
+// wrapper function for BubbleSort Algorithm
+template<typename T>
+void SelectionSort(vector<T>& arr){
+    SelectionSortHelper<T>(arr,arr.size());
+}
+
 // helper function for MergeSort
 // merge from index [i,j] to [j+1,k]
 template<typename T>
@@ -183,6 +205,26 @@ void TestBubbleSort(){
         }
     }
     cout << "BubbleSort正确性检测通过" << endl;
+}
+
+// helper function to test the correctness of SelectionSort algorithm
+// return false for incorrect result
+bool TestSelectionSortHelper(vector<int>& arr){
+    vector<int> temp = arr;
+    SelectionSort(temp);
+    sort(arr.begin(),arr.end());
+    return Check(arr,temp);
+}
+
+// randomly generate 1000 arrays to test the correctness of SelectionSort algorithm
+void TestSelectionSort(){
+    for(int i=0;i<1000;++i){
+        vector<int> temp = RandomArray();
+        if(!TestSelectionSortHelper(temp)){
+            cout << "SelectionSort正确性检测不通过" << endl;
+        }
+    }
+    cout << "SelectionSort正确性检测通过" << endl;
 }
 
 // helper function to test the correctness of MergeSort algorithm
