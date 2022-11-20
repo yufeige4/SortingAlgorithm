@@ -2,6 +2,7 @@
 
 
 // explicit instantiation
+template bool cmp<string>(string& a,string& b);
 template void Print<int>(vector<int>& arr,int size);
 template void BubbleSortHelper<int>(vector<int>& arr,int size);
 template void BubbleSort<int>(vector<int>& arr);

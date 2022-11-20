@@ -2,6 +2,70 @@
 
 using namespace std;
 
+// helper function for get digital portion of a string
+string Digitalize(string& a){
+    int i = 0;
+    int size = a.size();
+    while(i<size && (a[i]<'0'||a[i]>'9')){
+        ++i;
+    }
+    auto result = string(a,i);
+    if(!result.size()){
+        cout << "invalid input data" << endl;
+        exit(0);
+    }
+    return result;
+}
+
+// Comparator for large number especially String
+// a<=b -> false
+// a>b -> true
+template<typename T>
+bool cmp(T& a,T& b){
+    return a > b;
+}
+
+template<>
+bool cmp<string>(string& a,string& b){
+    if(!a.size()||!b.size()){
+        cout << "invalid input data" << endl;
+        exit(0);
+    }
+    bool signA = a[0]!='-';
+    bool signB = b[0]!='-';
+    if(!signA&&signB){
+        // a<0,b>0 -> a<b
+        return false;
+    }else if(signA&&!signB){
+        // a>0,b<0 -> a>b
+        return true;
+    }
+    // a,b are same sign
+    string digitA = Digitalize(a);
+    string digitB = Digitalize(b);
+    int endA = digitA.size()-1;
+    int endB = digitB.size()-1;
+    bool isGreater = false;
+    bool isEqual = false;
+    // same length
+    if(endA==endB){
+        for(int i=0;i<=endA;++i){
+            if(digitA[i]!=digitB[i]){
+                isGreater = digitA[i]>digitB[i];
+                break;
+            }
+            if(i==endA&&digitA[i]==digitB[i]){
+                isEqual = true;
+            }
+        }
+    }
+    if(signA){
+        return endA>endB||isGreater;
+    }else{
+        return endA<endB||!isGreater&&!isEqual;
+    }
+}
+
 // helper function for print to check the correctness
 template<typename T>
 void Print(vector<T>& arr,int size){
@@ -16,7 +80,7 @@ template<typename T>
 void BubbleSortHelper(vector<T>& arr,int size){
     for(int i=0;i<size;++i){
         for(int j=0;j<size-i-1;++j){
-            if(arr[j]>arr[j+1]){
+            if(cmp<T>(arr[j],arr[j+1])){
                 swap(arr[j],arr[j+1]);
             }
         }
@@ -44,7 +108,7 @@ void Merge(vector<T>& arr,int i,int j,int k){
         }else if(right>k){
             temp[index++] = arr[left++];
         }else{
-            if(arr[left]<=arr[right]){
+            if(cmp<T>(arr[right],arr[left])){
                 temp[index++] = arr[left++];
             }else{
                 temp[index++] = arr[right++];
@@ -115,10 +179,10 @@ void TestBubbleSort(){
     for(int i=0;i<1000;++i){
         vector<int> temp = RandomArray();
         if(!TestBubbleSortHelper(temp)){
-            cout << "BubbleSortËã·¨µÄÊµÏÖÓÐÎó" << endl;
+            cout << "BubbleSortæ­£ç¡®æ€§æ£€æµ‹ä¸é€šè¿‡" << endl;
         }
     }
-    cout << "BubbleSortËã·¨ÊµÏÖµÄÕýÈ·ÐÔ¼ì²âÍ¨¹ý" << endl;
+    cout << "BubbleSortæ­£ç¡®æ€§æ£€æµ‹é€šè¿‡" << endl;
 }
 
 // helper function to test the correctness of MergeSort algorithm
@@ -135,10 +199,10 @@ void TestMergeSort(){
     for(int i=0;i<1000;++i){
         vector<int> temp = RandomArray();
         if(!testMergeSortHelper(temp)){
-            cout << "MergeSortËã·¨µÄÊµÏÖÓÐÎó" << endl;
+            cout << "MergeSortæ­£ç¡®æ€§æ£€æµ‹ä¸é€šè¿‡" << endl;
         }
     }
-    cout << "MergeSortËã·¨ÊµÏÖµÄÕýÈ·ÐÔ¼ì²âÍ¨¹ý" << endl;
+    cout << "MergeSortæ­£ç¡®æ€§æ£€æµ‹é€šè¿‡" << endl;
 }
 
 // randomly generate 1000 arrays and use both algorithms to sort them
@@ -172,6 +236,6 @@ void CompareTwoAlgorithm(){
     time(&endTimeMergeSort);
     time_t BubbleSortCost = difftime(endTimeBubbleSort,startTimeBubbleSort);
     time_t MergeSortCost = difftime(endTimeMergeSort,startTimeMergeSort);
-    cout << "¶ÔÓÚÏàÍ¬µÄ10000¸öËæ»úÊý×é£¬Ã°ÅÝÅÅÐòµÄÊ±¼ä»¨ÏúÎª£º" << BubbleSortCost << endl;
-    cout << "¶ÔÓÚÏàÍ¬µÄ10000¸öËæ»úÊý×é£¬¹é²¢ÅÅÐòµÄÊ±¼ä»¨ÏúÎª£º" << MergeSortCost << endl;
+    cout << "å¯¹äºŽ10000ç»„ç›¸åŒæ•°æ®ï¼ŒBubbleSortæ—¶é—´ä¸º" << BubbleSortCost << endl;
+    cout << "å¯¹äºŽ10000ç»„ç›¸åŒæ•°æ®ï¼ŒMergeSortæ—¶é—´ä¸º" << MergeSortCost << endl;
 }
