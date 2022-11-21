@@ -1,5 +1,4 @@
-#include "code.h"
-
+#include "test.h"
 
 // explicit instantiation
 template bool cmp<string>(string& a,string& b);
