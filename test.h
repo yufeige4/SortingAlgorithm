@@ -10,23 +10,28 @@
 using namespace std;
 
 // helper function to randomly generate int array
-vector<int> RandomArray(){
+template<typename T>
+vector<T> RandomArray(){
     srand(time(NULL));
     int size = rand()%5000+1;
-    vector<int> arr(size,0);
+    vector<T> arr(size,0);
     for(int i=0;i<size;++i){
         arr[i] = rand()%5000;
     }
     return arr;
 }
 
-// helper function to randomly generate string array
-vector<string> RandomStringArray(){
+// helper function to randomly generate long string array
+template<>
+vector<string> RandomArray<string>(){
     srand(time(NULL));
-    int size = rand()%5000+1;
-    vector<string> arr(size,0);
+    int size = rand()%50000+1;
+    vector<string> arr(size,"");
     for(int i=0;i<size;++i){
         arr[i] = to_string(rand()%5000);
+        for ( int j = 0; j < 5; j++){
+            arr[i] += to_string(rand()%5000);
+        }
     }
     return arr;
 }
@@ -61,7 +66,7 @@ bool TestBubbleSortHelper(vector<int>& arr){
 void TestBubbleSort(){
     int i;
     for(i=0;i<1000;++i){
-        vector<int> temp = RandomArray();
+        vector<int> temp = RandomArray<int>();
         if(!TestBubbleSortHelper(temp)){
             break;
         }
@@ -85,7 +90,7 @@ bool TestSelectionSortHelper(vector<int>& arr){
 void TestSelectionSort(){
     int i;
     for(i=0;i<1000;++i){
-        vector<int> temp = RandomArray();
+        vector<int> temp = RandomArray<int>();
         if(!TestSelectionSortHelper(temp)){
             break;
         }
@@ -109,7 +114,7 @@ bool testMergeSortHelper(vector<int>& arr){
 void TestMergeSort(){
     int i;
     for(i=0;i<1000;++i){
-        vector<int> temp = RandomArray();
+        vector<int> temp = RandomArray<int>();
         if(!testMergeSortHelper(temp)){
             break;
         }
@@ -133,7 +138,7 @@ bool testShellSortHelper(vector<int>& arr){
 void TestShellSort(){
     int i;
     for(i=0;i<1000;++i){
-        vector<int> temp = RandomArray();
+        vector<int> temp = RandomArray<int>();
         if(!testShellSortHelper(temp)){
             break;
         }
@@ -157,7 +162,7 @@ bool testQuickSortHelper(vector<int>& arr){
 void TestQuickSort(){
     int i;
     for(i=0;i<1000;++i){
-        vector<int> temp = RandomArray();
+        vector<int> temp = RandomArray<int>();
         if(!testQuickSortHelper(temp)){
            break;
         }
@@ -190,7 +195,7 @@ bool TestRadixSortHelper(vector<int>& arr){
 void TestRadixSort(){
     int i;
     for(i=0;i<1000;++i){
-        vector<int> temp = RandomArray();
+        vector<int> temp = RandomArray<int>();
         if(!TestRadixSortHelper(temp)){
             break;
         }
@@ -203,35 +208,70 @@ void TestRadixSort(){
 
 // randomly generate 1000 arrays and use both algorithms to sort them
 // calculate the total time cost and compare them
-void CompareTwoAlgorithm(){
-    vector<vector<int>> sampleArrays;
-    // randomly generate 1000 arrays, stored in sampleArrays
-    for(int i=0;i<10000;++i){
-        vector<int> temp = RandomArray();
+void CompareAlgorithms(){
+    vector<vector<string>> sampleArrays;
+    // randomly generate 10 arrays, stored in sampleArrays
+    for(int i=0;i<1000;++i){
+        vector<string> temp = RandomArray<string>();
         sampleArrays.push_back(temp);
     }
-    vector<vector<int>> copiedArrays = sampleArrays;
+    vector<vector<string>> copiedArrays1 = sampleArrays;
+    vector<vector<string>> copiedArrays2 = sampleArrays;
+    vector<vector<string>> copiedArrays3 = sampleArrays;
+    vector<vector<string>> copiedArrays4 = sampleArrays;
+    vector<vector<string>> copiedArrays5 = sampleArrays;
 
-    time_t startTimeBubbleSort;
-    time_t endTimeBubbleSort;
+    time_t startTimeSelectionSort;
+    time_t endTimeSelectionSort;
     time_t startTimeMergeSort;
     time_t endTimeMergeSort;
+    time_t startTimeQuickSort;
+    time_t endTimeQuickSort;
+    time_t startTimeShellSort;
+    time_t endTimeShellSort;
+    time_t startTimeRadixSort;
+    time_t endTimeRadixSort;
 
     // use both algorithms to the same data set seperately
     // and recored their start time and end time
-    time(&startTimeBubbleSort);
-    for(int i=0;i<10000;++i){
-        BubbleSort(sampleArrays[i]);
+    time(&startTimeSelectionSort);
+    for(int i=0;i<1000;++i){
+        SelectionSort<string>(copiedArrays1[i]);
     }
-    time(&endTimeBubbleSort);
+    time(&endTimeSelectionSort);
 
     time(&startTimeMergeSort);
-    for(int i=0;i<10000;++i){
-        MergeSort(copiedArrays[i]);
+    for(int i=0;i<1000;++i){
+        MergeSort<string>(copiedArrays2[i]);
     }
     time(&endTimeMergeSort);
-    time_t BubbleSortCost = difftime(endTimeBubbleSort,startTimeBubbleSort);
+
+    time(&startTimeQuickSort);
+    for(int i=0;i<1000;++i){
+        MergeSort<string>(copiedArrays3[i]);
+    }
+    time(&endTimeQuickSort);
+
+    time(&startTimeShellSort);
+    for(int i=0;i<1000;++i){
+        MergeSort<string>(copiedArrays4[i]);
+    }
+    time(&endTimeShellSort);
+
+    time(&startTimeRadixSort);
+    for(int i=0;i<1000;++i){
+        MergeSort<string>(copiedArrays5[i]);
+    }
+    time(&endTimeRadixSort);
+
+    time_t SelectionSortCost = difftime(endTimeSelectionSort,startTimeSelectionSort);
     time_t MergeSortCost = difftime(endTimeMergeSort,startTimeMergeSort);
-    cout << "对于10000组相同数据，BubbleSort时间为" << BubbleSortCost << endl;
-    cout << "对于10000组相同数据，MergeSort时间为" << MergeSortCost << endl;
+    time_t QuickSortCost = difftime(endTimeQuickSort,startTimeQuickSort);
+    time_t ShellSortCost = difftime(endTimeShellSort,startTimeShellSort);
+    time_t RadixSortCost = difftime(endTimeRadixSort,startTimeRadixSort);
+    cout << "对于1000组相同数据，SelectionSort时间为" << SelectionSortCost << endl;
+    cout << "对于1000组相同数据，MergeSort时间为" << MergeSortCost << endl;
+    cout << "对于1000组相同数据，QuickSort时间为" << QuickSortCost << endl;
+    cout << "对于1000组相同数据，ShellSort时间为" << ShellSortCost << endl;
+    cout << "对于1000组相同数据，RadixSort时间为" << RadixSortCost << endl;
 }

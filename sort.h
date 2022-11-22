@@ -83,9 +83,9 @@ void MergeSortHelper(vector<T>& arr,int start,int end){
         return;
     }
     int mid = start + (end-start)/2; // take care of overflow issue
-    MergeSortHelper<int>(arr,start,mid);
-    MergeSortHelper<int>(arr,mid+1,end);
-    Merge<int>(arr,start,mid,end);
+    MergeSortHelper<T>(arr,start,mid);
+    MergeSortHelper<T>(arr,mid+1,end);
+    Merge<T>(arr,start,mid,end);
 }
 
 // wrapper function for MergeSort algorithm

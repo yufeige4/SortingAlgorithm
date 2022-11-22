@@ -6,7 +6,7 @@
 
 ## 使用方法
 
-## 公共方法
+## 公共方法 
 
 ### 数值类型转换函数——string Digitalize(string& a)
 ### 比较函数——bool cmp<string>(string& a,string& b)
