@@ -88,7 +88,8 @@ void Print(vector<T>& arr,int size){
 
 ## 测试验证方法
 ### 随机数据生成函数——vector<string> RandomStringArray()
-此方法主要用于测试阶段随机数据的生成。
+此方法主要用于测试阶段随机数据的生成。  
+数据范围为10^30 ，string类型带有正负号
 ``` c++
 template<>
 vector<string> RandomArray<string>(){
@@ -96,7 +97,8 @@ vector<string> RandomArray<string>(){
     int size = rand()%50000+1;
     vector<string> arr(size,"");
     for(int i=0;i<size;++i){
-        arr[i] = to_string(rand()%5000);
+        bool sign = rand()%2;
+        arr[i] = (sign ? "+" : "-" ) + to_string(rand()%5000);
         for ( int j = 0; j < 5; j++){
             arr[i] += to_string(rand()%5000);
         }
@@ -105,6 +107,8 @@ vector<string> RandomArray<string>(){
 }
 ```
 ### 检查数据相等函数——bool Check(vector<T>& arr1,vector<T>& arr2)
+此方法主要用于检查两个数是否相等。  
+如果两数长度不等则直接返回false，否则按位对比是否相等。
 ``` c++
 template<typename T>
 bool Check(vector<T>& arr1,vector<T>& arr2){
@@ -121,17 +125,12 @@ bool Check(vector<T>& arr1,vector<T>& arr2){
     return true;
 }
 ```
-### 测试排序算法辅助函数——bool TestSortHelper(vector<int>& arr)
-以下以选择排序举例
-``` c++
-bool TestSelectionSortHelper(vector<int>& arr){
-    vector<int> temp = arr;
-    SelectionSort(temp);
-    sort(arr.begin(),arr.end());
-    return Check(arr,temp);
-}
-```
+
 ### 测试排序算法函数——void TestSort()
+以下以选择排序举例
+此方法主要用于判断算法的正确性。  
+先进行一千论测试，每轮测试中随机生成数据然后进行排序，如果此轮测不通过则跳出循环。  
+最后根据通过的轮数给出此算法正确性结果。
 ``` c++
 void TestSelectionSort(){
     int i;
@@ -147,21 +146,49 @@ void TestSelectionSort(){
         cout << "SelectionSort正确性检测不通过" << endl;
 }
 ```
-
+### 测试排序算法辅助函数——bool TestSortHelper(vector<int>& arr)
+以下以选择排序举例
+此方法主要用于进行判断此算法在某一轮排序中结果是否正确。  
+``` c++
+bool TestSelectionSortHelper(vector<int>& arr){
+    vector<int> temp = arr;
+    SelectionSort(temp);
+    sort(arr.begin(),arr.end());
+    return Check(arr,temp);
+}
+```
 ## 排序算法实现
-
+***
 ### **选择排序**
 #### 算法简介
+每一趟从待排序的数据元素中选择最小（或最大）的一个元素作为首元素，直到所有元素排完为止。
 #### 算法实现
 ``` c++
-
+template<typename T>
+void SelectionSortHelper(vector<T>& arr,int size){
+    for(int i=0;i<size;++i){
+        T smallest = arr[i];
+        int index = i;
+        for(int j=i+1;j<size;++j){
+            if(cmp<T>(smallest,arr[j])){
+                smallest = arr[j];
+                index = j;
+            }
+        }
+        swap(arr[i],arr[index]);
+    }
+} 
 ```
 #### 时间复杂度分析
 ##### 理论分析
+* 最好情况：所有元素按照从小到大（或从大到小）已经排好序 O(n2)
+* 最坏情况：所有元素按照从大到小（或从小到大）逆序排列 O(n2)
+* 平均情况：O(n2)
 ##### 单机性能变化
 #### 空间复杂度分析
 ##### 理论分析
-##### 单机性能变化
+* 选择排序不需要额外的存储空间 o(1)
+
 ***
 ### **归并排序**
 #### 算法简介
