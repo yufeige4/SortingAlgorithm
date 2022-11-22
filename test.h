@@ -28,7 +28,8 @@ vector<string> RandomArray<string>(){
     int size = rand()%50000+1;
     vector<string> arr(size,"");
     for(int i=0;i<size;++i){
-        arr[i] = to_string(rand()%5000);
+        bool sign = rand()%2;
+        arr[i] = (sign ? "+" : "-" ) + to_string(rand()%5000);
         for ( int j = 0; j < 5; j++){
             arr[i] += to_string(rand()%5000);
         }
